@@ -178,5 +178,5 @@ Processing triggers for libc-bin (2.31-0ubuntu9.2) ...
 
 愉快的加入QQ群聊吧
 
-![群聊](https://gitee.com/pdusb/pdusb-fast-btpanel/raw/master/img/pdbolt-conn-qq-group.jpeg)
+![群聊](https://gitee.com/pdusb/pdusb-fast-btpanel/raw/master/imgs/pdbolt-conn-qq-group.jpeg)
 
