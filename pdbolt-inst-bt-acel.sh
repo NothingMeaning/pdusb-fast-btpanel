@@ -31,7 +31,7 @@ patch -p1 < ${SCRIPT_DIR}/patch/ubuntu*aarch64*install*.patch
 
 echo "准备加速包供安装使用"
 mkdir -p "${installPath}"/tmppython
-tar -C "${installPath}"/tmppython -zxf ${SCRIPT_DIR}/pyenv/pyenv-ubuntu*aarch64*.tar.gz 
+tar -C "${installPath}"/tmppython -jxf ${SCRIPT_DIR}/pyenv/pyenv-ubuntu*aarch64*.tar.xz 
 mv "${installPath}"/tmppython/pyenv /tmp/btp
 rm -rf "${installPath}"/tmppython/
 cp -r ${SCRIPT_DIR}/whls /tmp/btp/
