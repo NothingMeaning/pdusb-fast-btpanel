@@ -1,0 +1,29 @@
+--- orig/install.sh	2021-05-15 14:12:54.000000000 +0800
++++ new/install.sh	2021-06-01 08:35:27.686994067 +0800
+@@ -368,6 +368,7 @@
+ 				wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip.txt -T 5
+ 				$pyenv_path/pyenv/bin/pip install -U pip
+ 				$pyenv_path/pyenv/bin/pip install -U setuptools
++				$pyenv_path/pyenv/bin/pip install /tmp/whls/btpanel/*.whl
+ 				$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+ 			fi
+ 			source $pyenv_path/pyenv/bin/activate
+@@ -462,6 +463,7 @@
+ 	$pyenv_path/pyenv/bin/pip install -U pip
+ 	$pyenv_path/pyenv/bin/pip install -U setuptools
+ 	$pyenv_path/pyenv/bin/pip install -U wheel==0.34.2 
++	$pyenv_path/pyenv/bin/pip install /tmp/whls/btpanel/*.whl
+ 	$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+ 	source $pyenv_path/pyenv/bin/activate
+ }
+@@ -730,6 +732,10 @@
+ 		Install_Deb_Pack
+ 	fi
+ 
++  	if [ -e /tmp/btp/pyenv ] ;then
++    		mkdir -p $setup_path/server/panel/
++    		cp -r /tmp/btp/pyenv $setup_path/server/panel/
++  	fi
+ 	Install_Python_Lib
+ 	Install_Bt
+ 	

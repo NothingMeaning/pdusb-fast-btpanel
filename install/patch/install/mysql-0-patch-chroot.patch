@@ -1,0 +1,221 @@
+diff -Naur orig/mysql.sh new/mysql.sh
+--- orig/mysql.sh	2021-05-31 16:36:41.961679150 +0800
++++ new/mysql.sh	2021-05-31 19:24:27.493697299 +0800
+@@ -38,6 +38,8 @@
+ Centos8Check=$(cat /etc/redhat-release | grep ' 8.' | grep -iE 'centos|Red Hat')
+ CentosStream8Check=$(cat /etc/redhat-release |grep -i "Centos Stream"|grep 8)
+ 
++armlib="/usr/lib/aarch64-linux-gnu"
++
+ if [ -z "${cpuCore}" ]; then
+ 	cpuCore="1"
+ fi
+@@ -75,6 +77,7 @@
+ }
+ 
+ Service_Add(){
++	echo "Add myslqd service"
+ 	if [ "${PM}" == "yum" ] || [ "${PM}" == "dnf" ]; then
+ 		chkconfig --add mysqld
+ 		chkconfig --level 2345 mysqld on
+@@ -92,6 +95,7 @@
+ }
+ 
+ printVersion(){
++	echo "Create version"
+ 	if [ "${version}" = "alisql" ];then
+ 		echo "${alisql_version}" > ${Setup_Path}/version.pl
+ 	elif [ -z "${mariadbCheck}" ]; then
+@@ -116,7 +120,7 @@
+ Setup_Mysql_PyDb(){
+ 	pyMysql=$1
+ 	pyMysqlVer=$2
+-
++	echo "Setup pydb $pyMysql and $pyMysqlVer"
+ 	wget -O src.zip ${download_Url}/install/src/${pyMysql}-${pyMysqlVer}.zip -T 20
+ 	unzip src.zip
+ 	mv ${pyMysql}-${pyMysqlVer} src
+@@ -125,6 +129,7 @@
+ 	cd ..
+ 	rm -f src.zip
+ 	rm -rf src 
++	echo "Reload bt panel"
+ 	/etc/init.d/bt reload
+ 
+ }
+@@ -133,6 +138,7 @@
+ 	pipUrl=$(cat /root/.pip/pip.conf|awk 'NR==2 {print $3}')
+ 	[ "${pipUrl}" ] && checkPip=$(curl --connect-timeout 5 --head -s -o /dev/null -w %{http_code} ${pipUrl})
+ 	pyVersion=$(python -V 2>&1|awk '{printf ("%d",$2)}')
++	echo "Install pydb ${pyVersion}"
+ 	if [ "${pyVersion}" == "2" ];then
+ 		if [ -f "${Setup_Path}/mysqlDb3.pl" ]; then
+ 			local pyMysql="mysqlclient"
+@@ -156,11 +162,13 @@
+ }
+ 
+ Drop_Test_Databashes(){
++	echo "Drop test data base"
+ 	sleep 1
+ 	/etc/init.d/mysqld stop
+ 	pkill -9 mysqld_safe
+ 	pkill -9 mysql
+ 	sleep 1
++	echo "Restart mysqld "
+ 	/etc/init.d/mysqld start
+ 	sleep 1
+ 	/www/server/mysql/bin/mysql -uroot -p$mysqlpwd -e "drop database test";
+@@ -171,6 +179,7 @@
+ #设置软件链
+ SetLink()
+ {
++	echo "Create system link"
+ 	ln -sf ${Setup_Path}/bin/mysql /usr/bin/mysql
+ 	ln -sf ${Setup_Path}/bin/mysqldump /usr/bin/mysqldump
+ 	ln -sf ${Setup_Path}/bin/myisamchk /usr/bin/myisamchk
+@@ -186,6 +195,10 @@
+ 	rm -f /usr/lib64/libmysqlclient.so.20
+ 	rm -f /usr/lib/libmysqlclient.so.21
+ 	rm -f /usr/lib64/libmysqlclient.so.21
++	rm -f ${armlib}/libmysqlclient.so.16
++	rm -f ${armlib}/libmysqlclient.so.18
++	rm -f ${armlib}/libmysqlclient.so.20
++	rm -f ${armlib}/libmysqlclient.so.21
+ 	
+ 	if [ -f "${Setup_Path}/lib/libmysqlclient.so.18" ];then
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
+@@ -194,6 +207,9 @@
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.16
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.18
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.20
+ 	elif [ -f "${Setup_Path}/lib/mysql/libmysqlclient.so.18" ];then
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.16
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.16
+@@ -201,6 +217,9 @@
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.18
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.20
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 /usr/lib64/libmysqlclient.so.20
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.16
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.18
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.18 ${armlib}/libmysqlclient.so.20
+ 	elif [ -f "${Setup_Path}/lib/libmysqlclient.so.16" ];then
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
+@@ -208,6 +227,9 @@
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.16
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.18
++		ln -sf ${Setup_Path}/lib/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.20
+ 	elif [ -f "${Setup_Path}/lib/mysql/libmysqlclient.so.16" ];then
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.16
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.16
+@@ -215,12 +237,17 @@
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.18
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib/libmysqlclient.so.20
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 /usr/lib64/libmysqlclient.so.20
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.16
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.18
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient.so.16 ${armlib}/libmysqlclient.so.20
+ 	elif [ -f "${Setup_Path}/lib/libmysqlclient_r.so.16" ];then
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient_r.so.16 /usr/lib/libmysqlclient_r.so.16
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient_r.so.16 /usr/lib64/libmysqlclient_r.so.16
++		ln -sf ${Setup_Path}/lib/libmysqlclient_r.so.16 ${armlib}/libmysqlclient_r.so.16
+ 	elif [ -f "${Setup_Path}/lib/mysql/libmysqlclient_r.so.16" ];then
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib/libmysqlclient_r.so.16
+ 		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient_r.so.16 /usr/lib64/libmysqlclient_r.so.16
++		ln -sf ${Setup_Path}/lib/mysql/libmysqlclient_r.so.16 ${armlib}/libmysqlclient_r.so.16
+ 	elif [ -f "${Setup_Path}/lib/libmysqlclient.so.20" ];then
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.20 /usr/lib/libmysqlclient.so.16
+ 		ln -sf ${Setup_Path}/lib/libmysqlclient.so.20 /usr/lib64/libmysqlclient.so.16
+@@ -357,10 +384,12 @@
+ }
+ MySQL_Opt()
+ {
+-	cpuInfo=`cat /proc/cpuinfo |grep "processor"|wc -l`
++	# cpuInfo=`cat /proc/cpuinfo |grep "processor"|wc -l`
++	cpuInfo=4
+ 	sed -i 's/innodb_write_io_threads = 4/innodb_write_io_threads = '${cpuInfo}'/g' /etc/my.cnf
+ 	sed -i 's/innodb_read_io_threads = 4/innodb_read_io_threads = '${cpuInfo}'/g' /etc/my.cnf
+-	MemTotal=`free -m | grep Mem | awk '{print  $2}'`
++	# MemTotal=`free -m | grep Mem | awk '{print  $2}'`
++	MemTotal=3600
+ 	if [[ ${MemTotal} -gt 1024 && ${MemTotal} -lt 2048 ]]; then
+ 		sed -i "s#^key_buffer_size.*#key_buffer_size = 32M#" /etc/my.cnf
+ 		sed -i "s#^table_open_cache.*#table_open_cache = 128#" /etc/my.cnf
+@@ -565,6 +594,7 @@
+ 	[ "${version}" == "8.0" ] || [ "${version}" == "mariadb_10.2" ] || [ "${version}" == "mariadb_10.3" ] || [ "${version}" == "mariadb_10.4" ]&& echo "True" > ${Setup_Path}/mysqlDb3.pl
+ }
+ Mysql_Initialize(){
++	echo "Initialize mysql"
+ 	if [ -d "${Data_Path}" ]; then
+ 		rm -rf ${Data_Path}/*
+ 	else
+@@ -607,19 +637,21 @@
+ 	ln -sf ${Setup_Path}/lib/mysql /usr/lib/mysql
+ 	ln -sf ${Setup_Path}/include/mysql /usr/include/mysql
+ 	/etc/init.d/mysqld start
+-
++	echo "Change root passwd"
+ 	${Setup_Path}/bin/mysqladmin -u root password "${mysqlpwd}"
+ 
+ 	cd ${Setup_Path}
+ 	rm -f src.tar.gz
+ 	rm -rf src
++	echo "Start mysqld"
+ 	/etc/init.d/mysqld start
+ 
+ }
+ 
+ Bt_Check(){
+ 	checkFile="/www/server/panel/install/check.sh"
+-	wget -O ${checkFile} ${download_Url}/tools/check.sh			
++	wget -O ${checkFile} ${download_Url}/tools/check.sh	
++	echo "Check bt"		
+ 	. ${checkFile} 
+ }
+ 
+@@ -651,6 +683,14 @@
+ 	fi
+ }
+ 
++isChRoot(){
++if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
++	echo 1
++else
++	echo 0
++fi
++}
++
+ actionType=$1
+ version=$2
+ 
+@@ -698,6 +738,8 @@
+ 			;;
+ 	esac
+ 	System_Lib
++	myroot=$(isChroot)
++	# if [ "$myroot" == "1" ] ; then
+ 	if [ "${actionType}" == "install" ]; then
+ 		Install_Ready
+ 	fi
+@@ -711,6 +753,7 @@
+ 	Install_Configure
+ 	Install_Mysql
+ 	My_Cnf
++	# else
+ 	MySQL_Opt
+ 	Mysql_Initialize
+ 	SetLink
+@@ -724,6 +767,7 @@
+ 	fi
+ 	Drop_Test_Databashes
+ 	Bt_Check
++	# fi
+ elif [ "$actionType" == 'uninstall' ];then
+ 	Close_MySQL del
+ fi

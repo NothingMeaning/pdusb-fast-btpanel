@@ -1,0 +1,23 @@
+diff -Naur orig/php.sh new/php.sh
+--- orig/php.sh	2021-05-24 16:35:05.000000000 +0800
++++ new/php.sh	2021-06-01 12:39:55.177392655 +0800
+@@ -246,6 +246,9 @@
+ 		rm -rf icu
+ 		rm -f icu4c-60_3-src.tgz 
+ 	fi
++       if [ ! -f /usr/bin/icu-config ] ; then
++               ln -sf /usr/local/icu/bin/icu-config /usr/bin/icu-config
++       fi
+ }
+ Install_Libzip(){
+ 	if [ "${PM}" == "yum" ];then
+@@ -353,7 +356,8 @@
+ 
+ Set_PHP_FPM_Opt()
+ {
+-	MemTotal=`free -m | grep Mem | awk '{print  $2}'`
++	#MemTotal=`free -m | grep Mem | awk '{print  $2}'`
++	MemTotal=3700
+ 	if [[ ${MemTotal} -gt 1024 && ${MemTotal} -le 2048 ]]; then
+ 		sed -i "s#pm.max_children.*#pm.max_children = 50#" ${php_setup_path}/etc/php-fpm.conf
+ 		sed -i "s#pm.start_servers.*#pm.start_servers = 5#" ${php_setup_path}/etc/php-fpm.conf

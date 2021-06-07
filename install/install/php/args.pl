@@ -1,0 +1,1 @@
+--with-iconv-dir=/usr/local/libiconv --with-iconv=/usr/local/libiconv '-L/usr/local/libiconv'

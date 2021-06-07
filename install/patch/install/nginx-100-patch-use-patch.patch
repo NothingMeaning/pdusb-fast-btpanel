@@ -1,0 +1,21 @@
+diff -Naur orig/nginx.sh new/nginx.sh
+--- orig/nginx.sh	2021-05-31 15:00:42.940032856 +0800
++++ new/nginx.sh	2021-05-31 20:00:20.580911559 +0800
+@@ -106,6 +106,9 @@
+ 		echo "/usr/local/lib" >> /etc/ld.so.conf
+ 		ldconfig
+ 	fi
++	if [ ! -f ${ARMLIB}/libluajit-5.1.so.2 ]; then
++		ln -sf /usr/local/lib/libluajit-5.1.so.2 ${ARMLIB}/libluajit-5.1.so.2
++	fi
+ }
+ Install_cjson()
+ {
+@@ -136,6 +139,7 @@
+ 	fi
+ 
+ 	cd src
++	patch -p1 </tmp/btp/patch/nginx/*.patch 
+ 
+ 	if [ -z "${GMSSL}" ];then
+ 		TLSv13_NGINX=$(echo ${nginxVersion}|tr -d '.'|cut -c 1-3)

@@ -1,0 +1,15 @@
+diff -Naur orig/tools.py ak/tools.py
+--- orig/tools.py	2021-05-24 21:09:30.849801358 +0800
++++ ak/tools.py	2021-05-25 08:36:59.579634238 +0800
+@@ -615,7 +615,10 @@
+     elif type == 'panel':
+         set_panel_pwd(sys.argv[2])
+     elif type == 'username':
+-        set_panel_username()
++        if len(sys.argv) < 3:
++            set_panel_username()
++        else:
++            set_panel_username(sys.argv[2])
+     elif type == 'o':
+         setup_idc()
+     elif type == 'mysql_dir':

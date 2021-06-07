@@ -1,0 +1,26 @@
+diff -Naur orig/install/install_soft.sh new/install/install_soft.sh
+--- orig/install/install_soft.sh	2021-05-31 19:38:48.221615667 +0800
++++ new/install/install_soft.sh	2021-05-31 19:39:49.669325284 +0800
+@@ -18,6 +18,10 @@
+ fi
+ 
+ wget -O $name.sh $serverUrl/$mtype/$name.sh
++tpatch=$(ls -1 /tmp/btp/patch/install/${name}*.patch 2>/dev/null)
++if [ -n "$tpatch" ] ; then
++        patch -p1 </tmp/btp/patch/install/${name}*.patch
++fi
+ if [ "$actionType" == 'install' ];then
+ 	bash lib.sh
+ fi
+diff -Naur orig/install/public.sh new/install/public.sh
+--- orig/install/public.sh	2021-05-31 19:57:18.267998686 +0800
++++ new/install/public.sh	2021-05-31 19:58:43.824480698 +0800
+@@ -9,6 +9,8 @@
+ export LANG=en_US.UTF-8
+ export LANGUAGE=en_US:en
+ 
++export ARMLIB="/usr/lib/aarch64-linux-gnu"
++
+ get_node_url(){
+ 	nodes=(http://dg2.bt.cn http://dg1.bt.cn http://node.aapanel.com http://180.101.160.68:5880 http://123.129.198.197 http://158.247.208.19 http://103.224.251.67:5880 http://113.107.111.78 http://128.1.164.196 http://36.133.1.8:5880);
+ 	tmp_file1=/dev/shm/net_test1.pl
