@@ -46,6 +46,8 @@ echo "/usr/local/openssl/lib" > /etc/ld.so.conf.d/zopenssl.conf
 echo "/usr/local/icu/lib" > /etc/ld.so.conf.d/zopenssl.conf
 ldconfig
 
+chmod +x ${installPath}/install.sh
+
 echo "可以安装宝塔面板了,速度飞起来哦"
 echo "面板安装脚本路径 ${installPath}/install.sh"
-echo "执行命令 ${installPath}/install.sh 就可以哦"
+echo "执行命令 bash ${installPath}/install.sh 就可以哦"
