@@ -29,9 +29,11 @@
   su -
   mkdir testmeiyou
   cd testmeiyou
+  git clone https://gitee.com/pdusb/pdusb-fast-btpanel.git .
   ./pdbolt-inst-bt-acel.sh
   bash /tmp/btp/pdbolt-bt-install/install.sh
 ```
+上面如果执行失败需要重新执行，需要把第二条和第三条的 testmeiyou 更换成其他不存在的路径,如 aaa等
 此步骤的典型输出如下
 ```
 从官网下载宝塔安装脚本
