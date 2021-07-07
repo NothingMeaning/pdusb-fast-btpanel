@@ -27,6 +27,8 @@
 - 在加速包目录下执行
 ```Bash
   su -
+  mkdir testmeiyou
+  cd testmeiyou
   ./pdbolt-inst-bt-acel.sh
   bash /tmp/btp/pdbolt-bt-install/install.sh
 ```
