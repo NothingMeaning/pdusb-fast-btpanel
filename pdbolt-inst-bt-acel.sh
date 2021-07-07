@@ -20,7 +20,7 @@ do
 done
 
 echo "给官方脚本打加速patch"
-apt-get install -y patch
+apt-get install -y patch libbrotli-dev
 lsize=$(which patch)
 if [ -z "$lsize" ] ;then
   echo "系统里面没有patch 命令，无法加速呀"

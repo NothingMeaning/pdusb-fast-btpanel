@@ -30,7 +30,6 @@
   mkdir testmeiyou
   cd testmeiyou
   git clone https://gitee.com/pdusb/pdusb-fast-btpanel.git .
-  apt-get install libbrotli-dev
   ./pdbolt-inst-bt-acel.sh
   bash /tmp/btp/pdbolt-bt-install/install.sh
 ```
